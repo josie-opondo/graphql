@@ -11,11 +11,14 @@
     <!-- Login Page Container -->
     <div id="login-page" class="container">
         <h2>Login</h2>
-        <input type="text" id="usernameOrEmail" placeholder="Username or Email" class="input-field">
-        <input type="password" id="password" placeholder="Password" class="input-field">
-        <button id="login-btn" class="login-btn">Log In</button>
+        <form id="login-form">
+            <input type="text" id="usernameOrEmail" placeholder="Username or Email" class="input-field">
+            <input type="password" id="password" placeholder="Password" class="input-field">
+            <button type="submit" class="login-btn">Log In</button>
+        </form>
         <p id="error-message" class="error-message"></p>
     </div>
+    
 
     <!-- Profile Page Container (hidden at start) -->
     <div id="profile-page" class="container" style="display: none;">
