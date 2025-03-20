@@ -1,7 +1,7 @@
 import { getToken } from './auth.js';
 import { USER_QUERY, XP_BY_PROJECT_QUERY, PASS_FAIL_RATIO_QUERY, OBJECT_NAME_QUERY } from './queries.js';
 
-const GRAPHQL_ENDPOINT = 'https://((DOMAIN))/api/graphql-engine/v1/graphql';
+const GRAPHQL_ENDPOINT = 'https://learn.zone01kisumu.ke/api/graphql-engine/v1/graphql';
 
 export async function executeQuery(query, variables = {}) {
     const token = getToken();
