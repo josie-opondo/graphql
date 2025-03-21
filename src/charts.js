@@ -1,3 +1,5 @@
+import { formatXP } from "./utils.js";
+
 function renderXpProgressChart(transactions, container) {
     container.innerHTML = "";
 
@@ -163,7 +165,7 @@ function renderXpProgressChart(transactions, container) {
 
         circle.addEventListener("mouseenter", () => {
             tooltip.style.display = "block";
-            tooltip.textContent = `XP: ${point.xp} on ${point.date.toDateString()}`;
+            tooltip.textContent = `XP: ${formatXP(point.xp)} on ${point.date.toDateString()}`;
         });
 
         circle.addEventListener("mousemove", (event) => {
