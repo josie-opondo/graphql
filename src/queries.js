@@ -43,9 +43,12 @@ query ($id: Int!) {
 export const USER_SKILLS_QUERY = `
 {
   user {
-    skills {
-      name
-      level
+    skills: transactions(
+      where: { type: { _like: "skill_%" } }
+      order_by: [{ amount: desc }]
+    ) {
+      type
+      amount
     }
   }
 }
