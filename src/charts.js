@@ -57,7 +57,17 @@ function renderXpProgressChart(transactions, container) {
         path.setAttribute("stroke", "#6366f1");
         path.setAttribute("stroke-width", "3");
         path.setAttribute("fill", "none");
+
         svg.appendChild(path);
+
+        // Animate line drawing
+        const pathLength = path.getTotalLength();
+        path.style.strokeDasharray = pathLength;
+        path.style.strokeDashoffset = pathLength;
+        path.style.transition = "stroke-dashoffset 1.5s ease-in-out";
+        setTimeout(() => {
+            path.style.strokeDashoffset = "0";
+        }, 100);
 
         // Tooltip
         const tooltip = document.createElement("div");
@@ -167,6 +177,11 @@ function renderPassFailPieChart(results, container) {
             path.setAttribute("d", pathData.trim());
             path.setAttribute("fill", slice.color);
             path.style.cursor = "pointer";
+            path.classList.add("pie-slice");
+
+            setTimeout(() => {
+                path.classList.add("animated");
+            }, 100);
 
             path.addEventListener("mouseenter", () => {
                 tooltip.style.display = "block";

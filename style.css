@@ -150,11 +150,20 @@ body {
   width: 20px;
   margin-right: 8px;
 }
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
+.pie-slice {
+  transform-origin: center;
+  transform: scale(0);
+  transition: transform 0.8s ease-out;
+}
+.pie-slice.animated {
+  transform: scale(1);
+}
 
 /* Responsive fallback */
 @media(max-width: 600px) {
