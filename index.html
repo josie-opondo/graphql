@@ -8,42 +8,57 @@
 </head>
 <body>
 
-    <!-- Login Page Container -->
-    <div id="login-page" class="container">
-        <h2>Login</h2>
+    <!-- Login Page -->
+    <div id="login-page" class="login-container">
+        <h2>Welcome Back</h2>
+        <p>Please log in to access your profile.</p>
+    
         <form id="login-form">
-            <input type="text" id="usernameOrEmail" placeholder="Username or Email" class="input-field">
-            <input type="password" id="password" placeholder="Password" class="input-field">
-            <button type="submit" class="login-btn">Log In</button>
+            <label for="usernameOrEmail" style="display: block; text-align: left; margin-bottom: 4px;">Username or Email</label>
+            <input type="text" id="usernameOrEmail" class="input-field" placeholder="Enter your username or email" required>
+            
+            <label for="password" style="display: block; text-align: left; margin-top: 12px; margin-bottom: 4px;">Password</label>
+            <input type="password" id="password" class="input-field" placeholder="Enter your password" required>
+            
+            <button type="submit" id="login-btn" class="login-btn">Log In</button>
         </form>
+    
         <p id="error-message" class="error-message"></p>
     </div>
     
 
-    <!-- Profile Page Container (hidden at start) -->
-    <div id="profile-page" class="container" style="display: none;">
-        <div class="header">
-            <h2>Your Profile</h2>
+    <!-- Profile Page (hidden initially) -->
+    <div id="profile-page" style="display: none;">
+
+        <!-- Sticky Header -->
+        <div class="profile-header">
+            <h2>Your School Profile</h2>
             <button id="logout-btn" class="logout-btn">Log Out</button>
         </div>
 
-        <div id="user-info">
+        <!-- User Info -->
+        <div class="user-info">
             <p><strong>ID:</strong> <span id="user-id"></span></p>
             <p><strong>Login:</strong> <span id="user-login"></span></p>
             <p><strong>Total XP:</strong> <span id="user-xp"></span></p>
         </div>
 
-        <div class="graph-section">
-            <h3>XP by Project (Bar Chart)</h3>
-            <div id="xp-graph"></div>
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="card">
+                <h3>XP by Project</h3>
+                <div id="xp-graph"></div>
+            </div>
 
-            <h3>Pass / Fail Ratio (Pie Chart)</h3>
-            <div id="pass-fail-chart"></div>
+            <div class="card">
+                <h3>Pass/Fail Ratio</h3>
+                <div id="pass-fail-chart"></div>
+            </div>
+
+            <!-- Add more cards if needed, like Project overview or skills chart -->
         </div>
-
     </div>
 
     <script type="module" src="./src/main.js"></script>
-
 </body>
 </html>
