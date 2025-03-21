@@ -30,18 +30,6 @@ export const XP_BY_PROJECT_QUERY = `
 }
 `;
 
-//Get pass/fail ratios for projects
-export const PASS_FAIL_RATIO_QUERY = `
-{
-  result {
-    id
-    grade
-    objectId
-    createdAt
-  }
-}
-`;
-
 //Query for getting an object name by its ID (used for dynamic labeling)
 export const OBJECT_NAME_QUERY = `
 query ($id: Int!) {
