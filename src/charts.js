@@ -13,8 +13,8 @@ function renderXpProgressChart(transactions, container) {
         });
 
         const width = container.clientWidth;
-        const height = 400;
-        const padding = 50;
+        const height = 500;
+        const padding = 60;
         const minDate = points[0].date;
         const maxDate = points[points.length - 1].date;
         const maxXP = Math.max(...points.map((p) => p.xp));
@@ -27,7 +27,6 @@ function renderXpProgressChart(transactions, container) {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svg.setAttribute("width", width);
         svg.setAttribute("height", height);
-        svg.style.background = "#f9fafb";
 
         // Axes
         const xAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -35,7 +34,8 @@ function renderXpProgressChart(transactions, container) {
         xAxis.setAttribute("y1", height - padding);
         xAxis.setAttribute("x2", width - padding);
         xAxis.setAttribute("y2", height - padding);
-        xAxis.setAttribute("stroke", "#cbd5e1");
+        xAxis.setAttribute("stroke", "#6366f1");
+        xAxis.setAttribute("stroke-width", "2");
         svg.appendChild(xAxis);
 
         const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -43,10 +43,11 @@ function renderXpProgressChart(transactions, container) {
         yAxis.setAttribute("y1", height - padding);
         yAxis.setAttribute("x2", padding);
         yAxis.setAttribute("y2", padding);
-        yAxis.setAttribute("stroke", "#cbd5e1");
+        yAxis.setAttribute("stroke", "#6366f1");
+        yAxis.setAttribute("stroke-width", "2");
         svg.appendChild(yAxis);
 
-        // Path line
+        // Draw the XP progression line
         let pathData = `M ${xScale(points[0].date)} ${yScale(points[0].xp)}`;
         points.forEach((point) => {
             pathData += ` L ${xScale(point.date)} ${yScale(point.xp)}`;
@@ -57,14 +58,13 @@ function renderXpProgressChart(transactions, container) {
         path.setAttribute("stroke", "#6366f1");
         path.setAttribute("stroke-width", "3");
         path.setAttribute("fill", "none");
-
         svg.appendChild(path);
 
-        // Animate line drawing
+        // Animate line draw
         const pathLength = path.getTotalLength();
         path.style.strokeDasharray = pathLength;
         path.style.strokeDashoffset = pathLength;
-        path.style.transition = "stroke-dashoffset 1.5s ease-in-out";
+        path.style.transition = "stroke-dashoffset 1.8s ease-in-out";
         setTimeout(() => {
             path.style.strokeDashoffset = "0";
         }, 100);
@@ -73,21 +73,27 @@ function renderXpProgressChart(transactions, container) {
         const tooltip = document.createElement("div");
         tooltip.style.position = "absolute";
         tooltip.style.background = "#6366f1";
-        tooltip.style.color = "#fff";
-        tooltip.style.padding = "6px 10px";
-        tooltip.style.borderRadius = "6px";
-        tooltip.style.fontSize = "13px";
+        tooltip.style.color = "white";
+        tooltip.style.padding = "5px 10px";
+        tooltip.style.borderRadius = "5px";
+        tooltip.style.fontSize = "14px";
         tooltip.style.display = "none";
         tooltip.style.pointerEvents = "none";
-        tooltip.style.transform = "translate(-50%, -150%)";
+        tooltip.style.transform = "translate(-50%, -30px)";
         container.appendChild(tooltip);
 
+        // Skip circles that are too close
+        let lastX = -Infinity;
         points.forEach((point) => {
+            const x = xScale(point.date);
+            if (x - lastX < 12) return; // Minimum distance of 8px between points
+            lastX = x;
+
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", xScale(point.date));
+            circle.setAttribute("cx", x);
             circle.setAttribute("cy", yScale(point.xp));
-            circle.setAttribute("r", 5);
-            circle.setAttribute("fill", "#4f46e5");
+            circle.setAttribute("r", "6");
+            circle.setAttribute("fill", "#6366f1");
             circle.style.cursor = "pointer";
 
             circle.addEventListener("mouseenter", (event) => {
@@ -96,8 +102,8 @@ function renderXpProgressChart(transactions, container) {
             });
 
             circle.addEventListener("mousemove", (event) => {
-                tooltip.style.left = `${event.pageX}px`;
-                tooltip.style.top = `${event.pageY}px`;
+                tooltip.style.left = `${event.offsetX}px`;
+                tooltip.style.top = `${event.offsetY}px`;
             });
 
             circle.addEventListener("mouseleave", () => {
@@ -113,6 +119,7 @@ function renderXpProgressChart(transactions, container) {
     drawChart();
     window.addEventListener("resize", drawChart);
 }
+
 
 function renderPassFailPieChart(results, container) {
     function drawChart() {
