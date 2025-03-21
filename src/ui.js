@@ -1,5 +1,5 @@
 import { getUserData, getXpByProject, getPassFailRatio } from './graphql.js';
-import { renderXpBarChart, renderPassFailPieChart } from './charts.js';
+import { renderXpProgressChart, renderPassFailPieChart } from './charts.js';
 import { logout } from './auth.js';
 
 // Selectors
@@ -37,7 +37,7 @@ export async function showProfilePage() {
 
         // Fetch XP by project and render bar chart
         const xpData = await getXpByProject();
-        renderXpBarChart(xpData.transaction, xpGraphContainer);
+        renderXpProgressChart(xpData.transaction, xpGraphContainer);
 
         // Fetch pass/fail ratio and render pie chart
         const passFailData = await getPassFailRatio();
