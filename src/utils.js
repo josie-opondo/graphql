@@ -13,7 +13,6 @@ export async function fetchGraphQL(query, jwt) {
     }
 
     const data = await response.json();
-    console.log(data)
     return data.data;
 }
 
