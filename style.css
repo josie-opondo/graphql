@@ -121,12 +121,13 @@ body {
 
 /* Stats grid */
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 24px;
   padding: 20px 40px;
 }
 .card {
+  width: 100%;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
