@@ -165,6 +165,28 @@ body {
   transform: scale(1);
 }
 
+.skills-section {
+  margin-top: 40px;
+  padding: 20px 40px;
+}
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+}
+.skill-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.skill-card h4 {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #374151;
+}
+
 /* Responsive fallback */
 @media(max-width: 600px) {
   .profile-header {

@@ -50,3 +50,15 @@ query ($id: Int!) {
   }
 }
 `;
+
+//Query for getting user skills
+export const USER_SKILLS_QUERY = `
+{
+  user {
+    skills {
+      name
+      level
+    }
+  }
+}
+`;

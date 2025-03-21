@@ -1,6 +1,9 @@
 import { getUserData, getXpByProject, getPassFailRatio } from './graphql.js';
 import { renderXpProgressChart, renderPassFailPieChart } from './charts.js';
 import { logout } from './auth.js';
+import { renderSkillPieChart } from './skills.js';
+import { fetchGraphQL } from './utils.js';
+import { USER_SKILLS_QUERY } from './queries.js';
 
 // Selectors
 const loginPage = document.getElementById('login-page');
@@ -42,6 +45,22 @@ export async function showProfilePage() {
         // Fetch pass/fail ratio and render pie chart
         const passFailData = await getPassFailRatio();
         renderPassFailPieChart(passFailData.result, passFailChartContainer);
+
+        // Fetch and render skills
+        const jwt = localStorage.getItem('jwt');
+        const skillsData = await fetchGraphQL(USER_SKILLS_QUERY, jwt);
+        const skills = skillsData?.user[0].skills;
+        const skillsGrid = document.getElementById('skills-grid');
+        skillsGrid.innerHTML = "";
+        skills?.forEach(skill => {
+            const card = document.createElement('div');
+            card.classList.add('skill-card');
+            renderSkillPieChart(skill, card);
+            const name = document.createElement('h4');
+            name.textContent = skill.name;
+            card.appendChild(name);
+            skillsGrid.appendChild(card);
+        });
     } catch (err) {
         showError('Error loading profile: ' + err.message);
         console.error(err);
