@@ -1,15 +1,20 @@
 function renderXpProgressChart(transactions, container) {
     container.innerHTML = "";
 
-    if (transactions.length === 0) {
-        container.innerHTML = "<p>No data to display.</p>";
+    const moduleStartDate = new Date(2024, 3, 1); // April 1st, 2024
+    const filteredTransactions = transactions.filter(
+        (tx) => new Date(tx.createdAt) >= moduleStartDate
+    );
+
+    if (filteredTransactions.length === 0) {
+        container.innerHTML = "<p>No data to display for the core module period.</p>";
         return;
     }
 
-    transactions.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    filteredTransactions.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
     let cumulativeXP = 0;
-    const points = transactions.map((tx) => {
+    const points = filteredTransactions.map((tx) => {
         cumulativeXP += tx.amount;
         return { date: new Date(tx.createdAt), xp: cumulativeXP };
     });
@@ -32,7 +37,7 @@ function renderXpProgressChart(transactions, container) {
     svg.setAttribute("height", height);
     svg.style.background = "#ffffff";
 
-    // Draw horizontal grid lines
+    // Horizontal grid lines
     const gridLineCount = 5;
     for (let i = 0; i <= gridLineCount; i++) {
         const y = padding + ((height - 2 * padding) / gridLineCount) * i;
@@ -45,9 +50,9 @@ function renderXpProgressChart(transactions, container) {
         svg.appendChild(line);
     }
 
-    // Draw vertical grid lines and month ticks
+    // Vertical month ticks starting exactly from April 2024
     const monthTicks = [];
-    const current = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+    const current = new Date(2024, 3, 1); // Start ticking from April 1, 2024
     while (current <= maxDate) {
         monthTicks.push(new Date(current));
         current.setMonth(current.getMonth() + 1);
@@ -63,7 +68,7 @@ function renderXpProgressChart(transactions, container) {
         line.setAttribute("stroke", "#f1f5f9");
         svg.appendChild(line);
 
-        // Add month label
+        // Month labels
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute("x", x);
         text.setAttribute("y", height - padding + 20);
@@ -93,7 +98,7 @@ function renderXpProgressChart(transactions, container) {
     yAxis.setAttribute("stroke-width", "2");
     svg.appendChild(yAxis);
 
-    // Smooth cubic Bézier path
+    // Smooth cubic Bézier line
     let pathData = `M ${xScale(points[0].date)} ${yScale(points[0].xp)}`;
     for (let i = 1; i < points.length; i++) {
         const prev = points[i - 1];
@@ -109,7 +114,7 @@ function renderXpProgressChart(transactions, container) {
     path.setAttribute("fill", "none");
     svg.appendChild(path);
 
-    // Animate line draw
+    // Animate line drawing
     const pathLength = path.getTotalLength();
     path.style.strokeDasharray = pathLength;
     path.style.strokeDashoffset = pathLength;
@@ -135,7 +140,7 @@ function renderXpProgressChart(transactions, container) {
     let lastX = -Infinity;
     points.forEach((point) => {
         const x = xScale(point.date);
-        if (x - lastX < 12) return; // prevent overcrowding
+        if (x - lastX < 12) return; // Skip overly close points
         lastX = x;
 
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
