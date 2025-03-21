@@ -13,5 +13,26 @@ export async function fetchGraphQL(query, jwt) {
     }
 
     const data = await response.json();
+    console.log(data)
     return data.data;
 }
+
+export function getTopUniqueSkills(skills, limit = 8) {
+    const skillMap = new Map();
+  
+    skills.forEach((skill) => {
+      const existingAmount = skillMap.get(skill.type) || 0;
+      if (skill.amount > existingAmount) {
+        skillMap.set(skill.type, skill.amount);
+      }
+    });
+  
+    return [...skillMap.entries()]
+      .map(([type, amount]) => ({
+        name: type.replace("skill_", ""),
+        level: amount / 100, // convert to decimal if amounts are out of 100
+      }))
+      .sort((a, b) => b.level - a.level)
+      .slice(0, limit);
+  }
+  

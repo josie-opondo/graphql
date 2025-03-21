@@ -2,7 +2,7 @@ import { getUserData, getXpByProject } from './graphql.js';
 import { renderXpProgressChart } from './charts.js';
 import { logout } from './auth.js';
 import { renderSkillPieChart } from './skills.js';
-import { fetchGraphQL } from './utils.js';
+import { fetchGraphQL, getTopUniqueSkills } from './utils.js';
 import { USER_SKILLS_QUERY } from './queries.js';
 
 // Selectors
@@ -13,7 +13,6 @@ const userIdSpan = document.getElementById('user-id');
 const userLoginSpan = document.getElementById('user-login');
 const userXpSpan = document.getElementById('user-xp');
 const xpGraphContainer = document.getElementById('xp-graph');
-const passFailChartContainer = document.getElementById('pass-fail-chart');
 const logoutBtn = document.getElementById('logout-btn');
 
 export function showLoading(message = 'Loading...') {
@@ -46,9 +45,10 @@ export async function showProfilePage() {
         const jwt = localStorage.getItem('jwt');
         const skillsData = await fetchGraphQL(USER_SKILLS_QUERY, jwt);
         const skills = skillsData?.user[0].skills;
+        const topSkills = getTopUniqueSkills(skills);
         const skillsGrid = document.getElementById('skills-grid');
         skillsGrid.innerHTML = "";
-        skills?.forEach(skill => {
+        topSkills.forEach(skill => {
             const card = document.createElement('div');
             card.classList.add('skill-card');
             renderSkillPieChart(skill, card);
@@ -56,7 +56,7 @@ export async function showProfilePage() {
             name.textContent = skill.name;
             card.appendChild(name);
             skillsGrid.appendChild(card);
-        });
+          });
     } catch (err) {
         showError('Error loading profile: ' + err.message);
         console.error(err);
