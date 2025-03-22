@@ -4,14 +4,10 @@ export const USER_QUERY = `
   user {
     id
     login
-    transactions(where: { type: { _in: ["xp", "up", "down"] } }) {
+    auditRatio
+    transactions(where: { type: { _eq: "xp" } }) {
       amount
-      type
-      objectId
       createdAt
-      object {
-        name
-      }
     }
   }
 }

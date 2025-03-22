@@ -41,7 +41,7 @@ export async function showProfilePage() {
         // Fetch XP by project and render bar chart
         const xpData = await getXpByProject();
         renderXpProgressChart(xpData.transaction, xpGraphContainer);
-        renderAuditRatioBarChart(user.transactions, auditRatioBar);
+        renderAuditRatioBarChart(user, auditRatioBar);
 
         // Fetch and render skills
         const jwt = localStorage.getItem('jwt');
