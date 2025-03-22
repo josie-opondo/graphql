@@ -195,13 +195,18 @@ function renderXpProgressChart(transactions, container) {
 }
 
 function renderAuditRatioBarChart(transactions, container) {
+    const moduleStartDate = new Date(2024, 3, 1); // April 1st, 2024
+    const filteredTransactions = transactions.filter(
+        (tx) => new Date(tx.createdAt) >= moduleStartDate
+    );
+
     container.innerHTML = '';
 
-    const xpReceived = transactions
+    const xpReceived = filteredTransactions
         .filter(tx => tx.type === 'xp')
         .reduce((sum, tx) => sum + tx.amount, 0);
 
-    const xpGiven = transactions
+    const xpGiven = filteredTransactions
         .filter(tx => tx.type === 'down' || tx.type === 'up') // typically audit actions
         .reduce((sum, tx) => sum + tx.amount, 0);
 
