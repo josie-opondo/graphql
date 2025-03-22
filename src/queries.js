@@ -5,7 +5,7 @@ export const USER_QUERY = `
     id
     login
     auditRatio
-    transactions(where: { type: { _eq: "xp" } }) {
+    transactions(where: { type: { _eq: "xp" }, eventId: { _eq: 75 } }) {
       amount
       createdAt
     }
@@ -13,11 +13,10 @@ export const USER_QUERY = `
 }
 `;
 
-
 //Get XP earned per project (transactions grouped by object)
 export const XP_BY_PROJECT_QUERY = `
 {
-  transaction(where: { type: { _eq: "xp" } }) {
+  transaction(where: { type: { _eq: "xp" }, eventId: { _eq: 75 } }) {
     amount
     objectId
     createdAt
@@ -28,21 +27,12 @@ export const XP_BY_PROJECT_QUERY = `
 }
 `;
 
-//Query for getting an object name by its ID (used for dynamic labeling)
-export const OBJECT_NAME_QUERY = `
-query ($id: Int!) {
-  object(where: { id: { _eq: $id } }) {
-    name
-  }
-}
-`;
-
 //Query for getting user skills
 export const USER_SKILLS_QUERY = `
 {
   user {
     skills: transactions(
-      where: { type: { _like: "skill_%" } }
+      where: { type: { _like: "skill_%" }, eventId: { _eq: 75 } }
       order_by: [{ amount: desc }]
     ) {
       type
