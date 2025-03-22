@@ -4,8 +4,9 @@ export const USER_QUERY = `
   user {
     id
     login
-    transactions(where: { type: { _eq: "xp" } }) {
+    transactions(where: { type: { _in: ["xp", "up", "down"] } }) {
       amount
+      type
       objectId
       createdAt
       object {
@@ -15,6 +16,7 @@ export const USER_QUERY = `
   }
 }
 `;
+
 
 //Get XP earned per project (transactions grouped by object)
 export const XP_BY_PROJECT_QUERY = `
