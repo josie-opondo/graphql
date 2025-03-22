@@ -49,7 +49,7 @@ function renderXpProgressChart(transactions, container) {
     svg.setAttribute("height", height);
     svg.style.background = "#ffffff";
 
-    // Horizontal grid lines
+    // Draw horizontal grid lines & add Y-axis labels
     const gridLineCount = 5;
     for (let i = 0; i <= gridLineCount; i++) {
         const y = padding + ((height - 2 * padding) / gridLineCount) * i;
@@ -60,6 +60,17 @@ function renderXpProgressChart(transactions, container) {
         line.setAttribute("y2", y);
         line.setAttribute("stroke", "#e2e8f0");
         svg.appendChild(line);
+
+        // Add Y-axis labels
+        const value = maxXP - (maxXP / gridLineCount) * i;
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", padding - 10);
+        label.setAttribute("y", y + 5);
+        label.setAttribute("text-anchor", "end");
+        label.setAttribute("fill", "#64748b");
+        label.style.fontSize = "12px";
+        label.textContent = formatXP(Math.round(value));
+        svg.appendChild(label);
     }
 
     // Month ticks starting from April 2024
