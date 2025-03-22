@@ -1,5 +1,5 @@
 import { getToken } from './auth.js';
-import { USER_QUERY, XP_BY_PROJECT_QUERY, OBJECT_NAME_QUERY } from './queries.js';
+import { USER_QUERY, XP_BY_PROJECT_QUERY } from './queries.js';
 
 const GRAPHQL_ENDPOINT = 'https://learn.zone01kisumu.ke/api/graphql-engine/v1/graphql';
 
@@ -32,8 +32,4 @@ export function getUserData() {
 
 export function getXpByProject() {
     return executeQuery(XP_BY_PROJECT_QUERY);
-}
-
-export function getObjectName(id) {
-    return executeQuery(OBJECT_NAME_QUERY, { id });
 }
