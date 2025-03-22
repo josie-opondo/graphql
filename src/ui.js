@@ -1,5 +1,5 @@
 import { getUserData, getXpByProject } from './graphql.js';
-import { renderXpProgressChart } from './charts.js';
+import { renderXpProgressChart, renderAuditRatioBarChart } from './charts.js';
 import { logout } from './auth.js';
 import { renderSkillPieChart } from './skills.js';
 import { fetchGraphQL, getTopUniqueSkills } from './utils.js';
@@ -14,6 +14,7 @@ const userLoginSpan = document.getElementById('user-login');
 const userXpSpan = document.getElementById('user-xp');
 const xpGraphContainer = document.getElementById('xp-graph');
 const logoutBtn = document.getElementById('logout-btn');
+const auditRatioBar = document.getElementById('audit-ratio-graph');
 
 export function showLoading(message = 'Loading...') {
     profilePage.innerHTML = `<p>${message}</p>`;
@@ -40,6 +41,7 @@ export async function showProfilePage() {
         // Fetch XP by project and render bar chart
         const xpData = await getXpByProject();
         renderXpProgressChart(xpData.transaction, xpGraphContainer);
+        renderAuditRatioBarChart(user.transactions, auditRatioBar);
 
         // Fetch and render skills
         const jwt = localStorage.getItem('jwt');
