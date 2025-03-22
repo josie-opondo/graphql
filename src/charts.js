@@ -67,7 +67,7 @@ function renderXpProgressChart(transactions, container) {
     }
 
     const labelScale = (date, index) => {
-        const firstLabelX = xScale(monthTicks[0]) + 80;
+        const firstLabelX = xScale(monthTicks[0]) + 40;
         const lastLabelX = width - padding;
         const spacing = (lastLabelX - firstLabelX) / (monthTicks.length - 1);
         if (index === 0) return firstLabelX;
