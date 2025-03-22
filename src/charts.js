@@ -3,20 +3,15 @@ import { formatXP } from "./utils.js";
 function renderXpProgressChart(transactions, container) {
     container.innerHTML = "";
 
-    const moduleStartDate = new Date(2024, 3, 1); // April 1st, 2024
-    const filteredTransactions = transactions.filter(
-        (tx) => new Date(tx.createdAt) >= moduleStartDate
-    );
-
-    if (filteredTransactions.length === 0) {
-        container.innerHTML = "<p>No data to display for the core module period.</p>";
+    if (transactions.length === 0) {
+        container.innerHTML = "<p>No data to display for this module.</p>";
         return;
     }
 
-    filteredTransactions.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    transactions.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
     let cumulativeXP = 0;
-    const points = filteredTransactions.map((tx) => {
+    const points = transactions.map((tx) => {
         cumulativeXP += tx.amount;
         return { date: new Date(tx.createdAt), xp: cumulativeXP };
     });
@@ -33,23 +28,13 @@ function renderXpProgressChart(transactions, container) {
         padding + ((date - minDate) / (maxDate - minDate)) * (width - 2 * padding);
     const yScale = (xp) =>
         height - padding - (xp / maxXP) * (height - 2 * padding);
-    const labelScale = (date, index) => {
-        const firstLabelX = xScale(monthTicks[0]) + 80; // Offset first label
-        const lastLabelX = width - padding;
-        const spacing = (lastLabelX - firstLabelX) / (monthTicks.length - 1);
-
-        if (index === 0) return firstLabelX;
-        if (index === monthTicks.length - 1) return lastLabelX;
-        return firstLabelX + spacing * index;
-    };
-    
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
     svg.style.background = "#ffffff";
 
-    // Draw horizontal grid lines & add Y-axis labels
+    // Horizontal grid lines and Y-axis labels
     const gridLineCount = 5;
     for (let i = 0; i <= gridLineCount; i++) {
         const y = padding + ((height - 2 * padding) / gridLineCount) * i;
@@ -61,7 +46,7 @@ function renderXpProgressChart(transactions, container) {
         line.setAttribute("stroke", "#e2e8f0");
         svg.appendChild(line);
 
-        // Add Y-axis labels
+        // Y-axis labels
         const value = maxXP - (maxXP / gridLineCount) * i;
         const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
         label.setAttribute("x", padding - 10);
@@ -73,13 +58,22 @@ function renderXpProgressChart(transactions, container) {
         svg.appendChild(label);
     }
 
-    // Month ticks starting from April 2024
+    // Month ticks
     const monthTicks = [];
-    const current = new Date(2024, 3, 1);
+    const current = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
     while (current <= maxDate) {
         monthTicks.push(new Date(current));
         current.setMonth(current.getMonth() + 1);
     }
+
+    const labelScale = (date, index) => {
+        const firstLabelX = xScale(monthTicks[0]) + 80;
+        const lastLabelX = width - padding;
+        const spacing = (lastLabelX - firstLabelX) / (monthTicks.length - 1);
+        if (index === 0) return firstLabelX;
+        if (index === monthTicks.length - 1) return lastLabelX;
+        return firstLabelX + spacing * index;
+    };
 
     monthTicks.forEach((date, index) => {
         const x = xScale(date);
@@ -91,10 +85,9 @@ function renderXpProgressChart(transactions, container) {
         line.setAttribute("stroke", "#f1f5f9");
         svg.appendChild(line);
 
-        // Month labels
-        const textX = labelScale(date, index);
+        const labelX = labelScale(date, index);
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", textX);
+        text.setAttribute("x", labelX);
         text.setAttribute("y", height - padding + 20);
         text.setAttribute("text-anchor", index === 0 ? "start" : index === monthTicks.length - 1 ? "end" : "middle");
         text.setAttribute("fill", "#64748b");
@@ -122,7 +115,7 @@ function renderXpProgressChart(transactions, container) {
     yAxis.setAttribute("stroke-width", "2");
     svg.appendChild(yAxis);
 
-    // Smooth cubic Bézier path
+    // XP progression curve
     let pathData = `M ${xScale(points[0].date)} ${yScale(points[0].xp)}`;
     for (let i = 1; i < points.length; i++) {
         const prev = points[i - 1];
@@ -161,12 +154,8 @@ function renderXpProgressChart(transactions, container) {
     container.style.position = "relative";
     container.appendChild(tooltip);
 
-    let lastX = -Infinity;
     points.forEach((point) => {
         const x = xScale(point.date);
-        if (x - lastX < 12) return;
-        lastX = x;
-
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("cx", x);
         circle.setAttribute("cy", yScale(point.xp));
