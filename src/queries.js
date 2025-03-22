@@ -1,43 +1,52 @@
-//Get basic user information, including transactions for XP
-export const USER_QUERY = `
-{
-  user {
-    id
-    login
-    auditRatio
-    transactions(where: { type: { _eq: "xp" }, eventId: { _eq: 75 } }) {
-      amount
-      createdAt
+export const USER_DATA_QUERY = `
+    query {
+        user {
+            id
+            login
+            attrs
+            auditRatio
+            skills: transactions(where: { type: { _like: "skill_%" } }order_by: [{ amount: desc }]) {
+                type
+                amount
+            }
+            audits(order_by: {createdAt: desc},where: {closedAt: {_is_null: true} group: {captain: { canAccessPlatform: {_eq: true}}}}) {
+                closedAt
+                group {
+                    captain{
+                        canAccessPlatform
+                    }
+                    captainId
+                    captainLogin
+                    path
+                    createdAt
+                    updatedAt
+                    members {
+                        userId
+                        userLogin
+                    }
+                }
+                private {
+                    code
+                }
+            }
+            events(where: {eventId: {_eq: 75}}) {
+                level
+            }
+        }
+        transaction(where: {_and: [{eventId:{_eq: 75}}]},order_by: { createdAt: desc }) {
+            amount
+            createdAt
+            eventId
+            path
+            type
+            userId
+        }
+        progress(where: {_and: [{grade: {_is_null: false}},{eventId:{_eq: 75}}]},order_by: {createdAt: desc}){
+            id
+            createdAt
+            eventId
+            grade
+            path
+        }
     }
-  }
-}
-`;
-
-//Get XP earned per project (transactions grouped by object)
-export const XP_BY_PROJECT_QUERY = `
-{
-  transaction(where: { type: { _eq: "xp" }, eventId: { _eq: 75 } }) {
-    amount
-    objectId
-    createdAt
-    object {
-      name
-    }
-  }
-}
-`;
-
-//Query for getting user skills
-export const USER_SKILLS_QUERY = `
-{
-  user {
-    skills: transactions(
-      where: { type: { _like: "skill_%" }, eventId: { _eq: 75 } }
-      order_by: [{ amount: desc }]
-    ) {
-      type
-      amount
-    }
-  }
-}
-`;
+`
