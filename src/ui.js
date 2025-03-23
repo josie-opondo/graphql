@@ -1,9 +1,8 @@
-import { getUserData, getXpByProject } from './graphql.js';
+import { getUserData } from './graphql.js';
 import { renderXpProgressChart, renderAuditRatioBarChart } from './charts.js';
 import { logout } from './auth.js';
 import { renderSkillPieChart } from './skills.js';
-import { fetchGraphQL, getTopUniqueSkills } from './utils.js';
-import { USER_SKILLS_QUERY } from './queries.js';
+import { getTopUniqueSkills } from './utils.js';
 
 // Selectors
 const loginPage = document.getElementById('login-page');
@@ -31,22 +30,21 @@ export async function showProfilePage() {
     try {
         const userData = await getUserData();
         const user = userData.user[0];
+        const transactions = userData.transaction;
 
-        const totalXp = user.transactions.reduce((sum, tx) => sum + tx.amount, 0);
-
+        const totalXp = transactions.reduce((sum, tx) => sum + tx.amount, 0);
         userIdSpan.textContent = user.id;
         userLoginSpan.textContent = user.login;
         userXpSpan.textContent = totalXp;
 
-        // Fetch XP by project and render bar chart
-        const xpData = await getXpByProject();
-        renderXpProgressChart(xpData.transaction, xpGraphContainer);
-        renderAuditRatioBarChart(user, auditRatioBar);
+        // Render XP Progress Chart
+        renderXpProgressChart(transactions, xpGraphContainer);
 
-        // Fetch and render skills
-        const jwt = localStorage.getItem('jwt');
-        const skillsData = await fetchGraphQL(USER_SKILLS_QUERY, jwt);
-        const skills = skillsData?.user[0].skills;
+        // Render Audit Ratio Chart
+        renderAuditRatioBarChart({ auditRatio: user.auditRatio, transactions }, auditRatioBar);
+
+        // Render Skills
+        const skills = user.skills;
         const topSkills = getTopUniqueSkills(skills);
         const skillsGrid = document.getElementById('skills-grid');
         skillsGrid.innerHTML = "";
@@ -58,7 +56,7 @@ export async function showProfilePage() {
             name.textContent = skill.name;
             card.appendChild(name);
             skillsGrid.appendChild(card);
-          });
+        });
     } catch (err) {
         showError('Error loading profile: ' + err.message);
         console.error(err);
