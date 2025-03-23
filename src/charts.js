@@ -1,4 +1,4 @@
-import { formatXP } from "./utils.js";
+import { formatXP } from "./profileManager.js";
 
 function renderXpProgressChart(transactions, container) {
     container.innerHTML = "";
