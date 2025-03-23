@@ -1,5 +1,5 @@
 import { getToken } from './auth.js';
-import { USER_QUERY, XP_BY_PROJECT_QUERY } from './queries.js';
+import {USER_DATA_QUERY} from './queries.js';
 
 const GRAPHQL_ENDPOINT = 'https://learn.zone01kisumu.ke/api/graphql-engine/v1/graphql';
 
@@ -27,9 +27,6 @@ export async function executeQuery(query, variables = {}) {
 // Helper wrappers for specific queries:
 
 export function getUserData() {
-    return executeQuery(USER_QUERY);
+    return executeQuery(USER_DATA_QUERY);
 }
 
-export function getXpByProject() {
-    return executeQuery(XP_BY_PROJECT_QUERY);
-}
