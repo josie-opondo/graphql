@@ -1,16 +1,12 @@
 import { renderXpProgressChart, renderAuditRatioBarChart } from './charts.js';
 import { logout } from './auth.js';
 import { renderSkillPieChart } from './skills.js';
-import {fetchGraphQL, getTopUniqueSkills, isJwtExpired} from './utils.js';
+import {fetchGraphQL, formatXP, getTopUniqueSkills, isJwtExpired} from './utils.js';
 import { USER_DATA_QUERY } from "./queries.js";
 
 // Selectors
 const loginPage = document.getElementById('login-page');
 const profilePage = document.getElementById('profile-page');
-
-const userIdSpan = document.getElementById('user-id');
-const userLoginSpan = document.getElementById('user-login');
-const userXpSpan = document.getElementById('user-xp');
 const xpGraphContainer = document.getElementById('xp-graph');
 const logoutBtn = document.getElementById('logout-btn');
 const auditRatioBar = document.getElementById('audit-ratio-graph');
@@ -45,6 +41,13 @@ export async function showProfilePage() {
         const xpTransactions = userData.transaction.filter(
             (tx) => tx.type === "xp"
         );
+        const totalXp = xpTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+
+        document.getElementById('greeting-username').textContent = user.attrs.firstName
+        document.getElementById('summary-xp').textContent = formatXP(totalXp);
+        document.getElementById('summary-audit-ratio').textContent = user.auditRatio.toFixed(1);
+        document.getElementById('summary-level').textContent = user.events[0]?.level ?? 'N/A';
+
 
         // Render XP Progress Chart
         renderXpProgressChart(xpTransactions, xpGraphContainer);
