@@ -37,11 +37,24 @@
         </div>
 
         <!-- User Info -->
-        <div class="user-info">
-            <p><strong>ID:</strong> <span id="user-id"></span></p>
-            <p><strong>Login:</strong> <span id="user-login"></span></p>
-            <p><strong>Total XP:</strong> <span id="user-xp"></span></p>
+        <div id="user-summary" class="summary-container">
+            <h2 id="greeting">Hi, <span id="greeting-username"></span> 👋</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h4>Total XP</h4>
+                    <p id="summary-xp">Loading...</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Audit Ratio</h4>
+                    <p id="summary-audit-ratio">Loading...</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Level</h4>
+                    <p id="summary-level">Loading...</p>
+                </div>
+            </div>
         </div>
+
 
         <!-- Stats Section -->
         <div class="stats-grid">

@@ -187,6 +187,40 @@ body {
   color: #374151;
 }
 
+.summary-container {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: #f8fafc;
+  border-radius: 10px;
+}
+
+.summary-grid {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.summary-card {
+  flex: 1;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.summary-card h4 {
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.summary-card p {
+  font-size: 20px;
+  color: #1e293b;
+  font-weight: bold;
+}
+
+
 /* Responsive fallback */
 @media(max-width: 600px) {
   .profile-header {
