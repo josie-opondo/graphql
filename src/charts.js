@@ -186,75 +186,80 @@ function renderXpProgressChart(transactions, container) {
 function renderAuditRatioBarChart(user, container) {
     container.innerHTML = '';
 
-    const xpReceived = user.transactions.reduce((sum, tx) => sum + tx.amount, 0);
-    const xpGiven = user.auditRatio * xpReceived;
+    // Calculate XP received (transactions of type 'up')
+    const xpGiven = user.transactions
+        .filter(tx => tx.type === "up")
+        .reduce((sum, tx) => sum + tx.amount, 0);
 
-    if (xpReceived === 0 && xpGiven === 0) {
-        container.innerHTML = '<p>No audit data to display.</p>';
-        return;
-    }
+    // Calculate XP given (transactions of type 'down')
+    const xpReceived = user.transactions
+        .filter(tx => tx.type === "down")
+        .reduce((sum, tx) => sum + tx.amount, 0);
 
+    // Calculate audit ratio
+    const auditRatio = xpReceived > 0 ? (xpGiven / xpReceived).toFixed(1) : 'N/A';
+
+    // Chart dimensions and layout
+    const svgWidth = 500;
+    const svgHeight = 200;
+    const barHeight = 30;
+    const barSpacing = 70;
     const maxXP = Math.max(xpReceived, xpGiven);
-    const chartData = [
-        { label: 'XP Received', value: xpReceived, color: '#3b82f6' },
-        { label: 'XP Given', value: xpGiven, color: '#22c55e' }
-    ];
-
-    const svgWidth = container.clientWidth;
-    const barHeight = 40;
-    const gap = 30;
-    const svgHeight = chartData.length * (barHeight + gap) + 50;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('width', svgWidth);
     svg.setAttribute('height', svgHeight);
 
-    chartData.forEach((item, index) => {
-        const barLength = (item.value / maxXP) * (svgWidth - 250);
+    const data = [
+        { label: 'XP Received', value: xpReceived, color: '#3b82f6' },
+        { label: 'XP Given', value: xpGiven, color: '#22c55e' }
+    ];
 
-        // Horizontal bar
+    data.forEach((item, index) => {
+        const barLength = (item.value / maxXP) * 300;
+        const yOffset = index * barSpacing;
+
+        // Static left-side label
+        const textLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textLabel.setAttribute('x', 10);
+        textLabel.setAttribute('y', yOffset + barHeight / 2 + 5);
+        textLabel.setAttribute('fill', '#334155');
+        textLabel.style.fontSize = '15px';
+        textLabel.textContent = item.label;
+        svg.appendChild(textLabel);
+
+        // Bar itself
         const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', 200);
-        rect.setAttribute('y', index * (barHeight + gap));
+        rect.setAttribute('x', 150);
+        rect.setAttribute('y', yOffset);
         rect.setAttribute('height', barHeight);
-        rect.setAttribute('width', 0);
+        rect.setAttribute('width', 0); // Animate from width 0
         rect.setAttribute('fill', item.color);
         svg.appendChild(rect);
 
-        // Animate the bar
+        // Animate bar growth
         setTimeout(() => {
             rect.setAttribute('width', barLength);
         }, 100);
 
-        // Left-side labels
-        const textLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        textLabel.setAttribute('x', 0);
-        textLabel.setAttribute('y', index * (barHeight + gap) + barHeight / 2 + 5);
-        textLabel.setAttribute('fill', '#334155');
-        textLabel.style.fontSize = '14px';
-        textLabel.textContent = item.label;
-        svg.appendChild(textLabel);
-
-        // Right-side value labels
+        // Value label at end of bar
         const valueLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        valueLabel.setAttribute('x', 210 + barLength);
-        valueLabel.setAttribute('y', index * (barHeight + gap) + barHeight / 2 + 5);
+        valueLabel.setAttribute('x', 160 + barLength);
+        valueLabel.setAttribute('y', yOffset + barHeight / 2 + 5);
         valueLabel.setAttribute('fill', '#475569');
-        valueLabel.style.fontSize = '13px';
-        valueLabel.textContent = `${formatXP(item.value)}`;
+        valueLabel.style.fontSize = '14px';
+        valueLabel.textContent = formatXP(item.value);
         svg.appendChild(valueLabel);
     });
 
     container.appendChild(svg);
 
-    // Display audit ratio below the chart
-    const ratio = xpReceived > 0 ? (xpGiven / xpReceived).toFixed(2) : 'N/A';
-    const ratioText = document.createElement('p');
-    ratioText.style.marginTop = '20px';
-    ratioText.style.fontSize = '16px';
-    ratioText.style.fontWeight = 'bold';
-    ratioText.style.color = '#334155';
-    ratioText.textContent = `Audit Ratio (XP Given / XP Received): ${ratio}`;
+    // Display audit ratio summary below the chart
+    const ratioText = document.createElement('div');
+    ratioText.style.textAlign = 'center';
+    ratioText.style.fontSize = '18px';
+    ratioText.style.marginTop = '10px';
+    ratioText.innerHTML = `<strong>Audit Ratio:</strong> ${auditRatio}`;
     container.appendChild(ratioText);
 }
 
