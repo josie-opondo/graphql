@@ -42,9 +42,12 @@ export async function showProfilePage() {
         const userData = await fetchGraphQL(USER_DATA_QUERY, jwt);
         const user = userData.user[0];
         const transactions = userData.transaction;
+        const xpTransactions = userData.transaction.filter(
+            (tx) => tx.type === "xp"
+        );
 
         // Render XP Progress Chart
-        renderXpProgressChart(transactions, xpGraphContainer);
+        renderXpProgressChart(xpTransactions, xpGraphContainer);
 
         // Render Audit Ratio Chart
         renderAuditRatioBarChart({ auditRatio: user.auditRatio, transactions }, auditRatioBar);
