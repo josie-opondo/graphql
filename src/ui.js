@@ -1,8 +1,8 @@
-import { getUserData } from './graphql.js';
 import { renderXpProgressChart, renderAuditRatioBarChart } from './charts.js';
 import { logout } from './auth.js';
 import { renderSkillPieChart } from './skills.js';
-import { getTopUniqueSkills } from './utils.js';
+import {fetchGraphQL, getTopUniqueSkills, isJwtExpired} from './utils.js';
+import { USER_DATA_QUERY } from "./queries.js";
 
 // Selectors
 const loginPage = document.getElementById('login-page');
@@ -24,18 +24,24 @@ export function showError(message) {
 }
 
 export async function showProfilePage() {
+    const jwt = localStorage.getItem('jwt');
+
+    if (!jwt || isJwtExpired(jwt)) {
+        console.warn('JWT expired or missing, redirecting to login.');
+        logout();
+        loginPage.style.display = 'block';
+        profilePage.style.display = 'none';
+        return;
+    }
+
     loginPage.style.display = 'none';
     profilePage.style.display = 'block';
 
     try {
-        const userData = await getUserData();
+        const jwt = localStorage.getItem('jwt');
+        const userData = await fetchGraphQL(USER_DATA_QUERY, jwt);
         const user = userData.user[0];
         const transactions = userData.transaction;
-
-        const totalXp = transactions.reduce((sum, tx) => sum + tx.amount, 0);
-        userIdSpan.textContent = user.id;
-        userLoginSpan.textContent = user.login;
-        userXpSpan.textContent = totalXp;
 
         // Render XP Progress Chart
         renderXpProgressChart(transactions, xpGraphContainer);
