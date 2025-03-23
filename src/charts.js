@@ -200,7 +200,7 @@ function renderAuditRatioBarChart(user, container) {
     const auditRatio = xpReceived > 0 ? (xpGiven / xpReceived).toFixed(1) : 'N/A';
 
     // Chart dimensions and layout
-    const svgWidth = 500;
+    const svgWidth = 1000;
     const svgHeight = 200;
     const barHeight = 30;
     const barSpacing = 70;
