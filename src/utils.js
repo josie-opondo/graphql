@@ -40,3 +40,14 @@ export function formatXP(amount) {
   if (amount < 1000000) return `${(amount / 1000).toFixed(2)} KB`;
   return `${(amount / 1000000).toFixed(2)} MB`;
 }
+
+export function isJwtExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;
+  } catch (error) {
+    return true; // Treat invalid tokens as expired
+  }
+}
+
