@@ -25,10 +25,10 @@ export class ProfileManager {
             const totalXp = xpTransactions.reduce((sum, tx) => sum + tx.amount, 0);
 
             // Update user info
-            document.getElementById('greeting-username').textContent = user.attrs.firstName;
-            document.getElementById('summary-xp').textContent = formatXP(totalXp);
-            document.getElementById('summary-audit-ratio').textContent = user.auditRatio.toFixed(1);
-            document.getElementById('summary-level').textContent = user.events[0]?.level ?? 'N/A';
+            setElementTextContent('greeting-username', user.attrs.firstName);
+            setElementTextContent('summary-xp', formatXP(totalXp));
+            setElementTextContent('summary-audit-ratio', user.auditRatio.toFixed(1));
+            setElementTextContent('summary-level', user.events[0]?.level ?? 'N/A');
 
             // Render charts
             renderXpProgressChart(xpTransactions, document.getElementById('xp-graph'));
@@ -78,4 +78,13 @@ export function formatXP(amount) {
     if (amount < 1000) return `${amount} XP`;
     if (amount < 1000000) return `${(amount / 1000).toFixed(2)} KB`;
     return `${(amount / 1000000).toFixed(2)} MB`;
+}
+
+function setElementTextContent(id, text) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = text;
+    } else {
+        console.warn(`Element with ID ${id} not found.`);
+    }
 }
